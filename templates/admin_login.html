@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Вход администратора</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 50% 20%, rgba(34,211,238,.16), transparent 35%),
+                linear-gradient(135deg, #031522, #073d4d, #020a12);
+            color: white;
+            font-family: '{{ font }}', sans-serif;
+        }
+
+        .glass {
+            background: rgba(255,255,255,.065);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(255,255,255,.12);
+        }
+    </style>
+</head>
+
+<body class="flex items-center justify-center px-5">
+
+<div class="glass rounded-3xl p-8 md:p-10 w-full max-w-md shadow-2xl">
+
+    <div class="text-center mb-8">
+        <div class="text-5xl mb-4">⚙️</div>
+
+        <h1 class="text-3xl font-bold">
+            Панель администратора
+        </h1>
+
+        <p class="text-white/45 mt-2">
+            Управление уроком и голосованием
+        </p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="bg-red-500/15 text-red-300 rounded-xl p-4 mb-5">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        <input type="text"
+               name="username"
+               required
+               autocomplete="username"
+               placeholder="Логин администратора"
+               class="w-full bg-black/20 border border-white/10 rounded-xl px-5 py-4 outline-none focus:border-cyan-300/50">
+
+        <input type="password"
+               name="password"
+               required
+               autocomplete="current-password"
+               placeholder="Пароль"
+               class="w-full mt-4 bg-black/20 border border-white/10 rounded-xl px-5 py-4 outline-none focus:border-cyan-300/50">
+
+        <button class="w-full mt-5 bg-cyan-400 text-slate-950 rounded-xl py-4 font-bold hover:bg-cyan-300 transition">
+            Войти
+        </button>
+    </form>
+
+    <a href="{% url 'home' %}"
+       class="block text-center text-white/40 mt-6 hover:text-white">
+        ← Вернуться на сайт
+    </a>
+</div>
+
+</body>
+</html>

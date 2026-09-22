@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block title %}Голосование{% endblock %}
+
+{% block extra_css %}
+<style>
+    .team-card {
+        transition: transform .3s ease, box-shadow .3s ease;
+    }
+
+    .team-card:hover {
+        transform: translateY(-8px);
+    }
+
+    .blue-team {
+        background: linear-gradient(145deg, #2196f3, #0876d1);
+        color: #050505;
+    }
+
+    .red-team {
+        background: linear-gradient(145deg, #ef4444, #c52222);
+        color: #050505;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="min-h-screen pt-36 pb-20 px-5">
+
+    <div class="max-w-5xl mx-auto">
+
+        <div class="text-center mb-14">
+            <span class="text-cyan-300 text-sm uppercase tracking-[.3em]">
+                ГОЛОСОВАНИЕ
+            </span>
+
+            <h1 class="text-4xl md:text-6xl font-bold mt-4 gradient-text">
+                {% if election %}
+                    {{ election.title }}
+                {% else %}
+                    Голосование
+                {% endif %}
+            </h1>
+
+            <p class="text-white/55 mt-5">
+                Выберите одну из двух команд.
+            </p>
+        </div>
+
+        {% if election %}
+        <div class="grid md:grid-cols-2 gap-7">
+
+            <button onclick="voteFor('blue')"
+                    class="team-card blue-team rounded-3xl p-8 md:p-12 text-left shadow-2xl">
+                <div class="text-7xl mb-7">🔵</div>
+
+                <div class="text-3xl font-black">
+                    {{ election.blue_name }}
+                </div>
+
+                <div class="mt-4 font-semibold opacity-70">
+                    Нажать, чтобы проголосовать
+                </div>
+
+                <div id="bluePercent" class="text-5xl font-black mt-10">
+                    0%
+                </div>
+
+                <div class="mt-2 font-semibold">
+                    голосов
+                </div>
+            </button>
+
+            <button onclick="voteFor('red')"
+                    class="team-card red-team rounded-3xl p-8 md:p-12 text-left shadow-2xl">
+                <div class="text-7xl mb-7">🔴</div>
+
+                <div class="text-3xl font-black">
+                    {{ election.red_name }}
+                </div>
+
+                <div class="mt-4 font-semibold opacity-70">
+                    Нажать, чтобы проголосовать
+                </div>
+
+                <div id="redPercent" class="text-5xl font-black mt-10">
+                    0%
+                </div>
+
+                <div class="mt-2 font-semibold">
+                    голосов
+                </div>
+            </button>
+
+        </div>
+
+        <div class="glass rounded-3xl p-7 mt-8 text-center">
+            <div class="text-white/50 text-sm">Всего голосов</div>
+            <div id="totalVotes" class="text-4xl font-bold mt-2">0</div>
+        </div>
+
+        <div id="voteMessage"
+             class="hidden text-center mt-7 glass rounded-2xl p-5 text-cyan-200">
+        </div>
+
+        {% else %}
+        <div class="glass rounded-3xl p-10 text-center text-white/50">
+            Сейчас активного голосования нет.
+        </div>
+        {% endif %}
+
+    </div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let voted = false;
+
+function getCookie(name) {
+    const cookies = document.cookie.split(";");
+
+    for (const cookie of cookies) {
+        const [key, ...value] = cookie.trim().split("=");
+
+        if (key === name) {
+            return decodeURIComponent(value.join("="));
+        }
+    }
+
+    return null;
+}
+
+function updateResults(data) {
+    document.getElementById("bluePercent").textContent =
+        `${data.blue_percent}%`;
+
+    document.getElementById("redPercent").textContent =
+        `${data.red_percent}%`;
+
+    document.getElementById("totalVotes").textContent =
+        data.total;
+}
+
+async function voteFor(team) {
+    if (voted) {
+        showMessage("Вы уже проголосовали в этом голосовании.");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("team", team);
+
+    const response = await fetch("{% url 'cast_vote' %}", {
+        method: "POST",
+        body: formData,
+        headers: {
+            "X-CSRFToken": getCookie("csrftoken"),
+            "X-Requested-With": "XMLHttpRequest"
+        }
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+        voted = true;
+        updateResults(data);
+        showMessage("✓ Спасибо! Ваш голос принят.");
+    } else {
+        showMessage(data.message || "Ошибка.");
+    }
+}
+
+function showMessage(text) {
+    const box = document.getElementById("voteMessage");
+    box.textContent = text;
+    box.classList.remove("hidden");
+}
+
+async function refreshResults() {
+    const response = await fetch("{% url 'election_results' %}");
+    const data = await response.json();
+
+    if (data.active) {
+        updateResults(data);
+    }
+}
+
+refreshResults();
+setInterval(refreshResults, 2000);
+</script>
+{% endblock %}

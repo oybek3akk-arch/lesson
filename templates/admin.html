@@ -1,0 +1,367 @@
+{% extends "base.html" %}
+
+{% block title %}Панель администратора{% endblock %}
+
+{% block content %}
+<main class="pt-32 pb-20 px-5">
+
+<div class="max-w-7xl mx-auto">
+
+    <div class="flex flex-col md:flex-row justify-between gap-5 mb-10">
+        <div>
+            <span class="text-cyan-300 uppercase tracking-widest text-sm">
+                Управление
+            </span>
+
+            <h1 class="text-4xl md:text-6xl font-bold mt-3 gradient-text">
+                Панель администратора
+            </h1>
+        </div>
+
+        <div class="flex items-center gap-3">
+            <a href="{% url 'home' %}"
+               class="px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20">
+                Сайт
+            </a>
+
+            <a href="{% url 'admin_logout' %}"
+               class="px-5 py-3 rounded-xl bg-red-400 text-slate-950 font-bold">
+                Выйти
+            </a>
+        </div>
+    </div>
+
+    <!-- CREATE ELECTION -->
+    <section class="glass rounded-3xl p-6 md:p-8 mb-10">
+
+        <h2 class="text-2xl font-bold">
+            Создать новое голосование
+        </h2>
+
+        <form method="post"
+              action="{% url 'admin_create_election' %}"
+              class="grid md:grid-cols-3 gap-4 mt-6">
+
+            {% csrf_token %}
+
+            {{ election_form.title }}
+            {{ election_form.blue_name }}
+            {{ election_form.red_name }}
+
+            <button class="md:col-span-3 bg-cyan-400 text-slate-950 rounded-xl py-4 font-bold hover:bg-cyan-300 transition">
+                СОЗДАТЬ И СДЕЛАТЬ АКТИВНЫМ
+            </button>
+        </form>
+
+    </section>
+
+    <!-- ELECTIONS -->
+    <section class="mb-12">
+
+        <div class="flex items-center justify-between mb-5">
+            <h2 class="text-3xl font-bold">
+                Голосования и результаты
+            </h2>
+
+            <span class="text-white/40 text-sm">
+                Обновляются автоматически
+            </span>
+        </div>
+
+        <div id="electionsContainer" class="space-y-5">
+
+            {% for election in elections %}
+            <div class="glass rounded-2xl p-6 election-card"
+                 data-election="{{ election.id }}">
+
+                <div class="flex flex-col md:flex-row justify-between gap-4">
+
+                    <div>
+                        <h3 class="text-xl font-bold">
+                            {{ election.title }}
+                        </h3>
+
+                        <div class="text-sm text-white/40 mt-1">
+                            {% if election.is_active %}
+                                <span class="text-green-300">● АКТИВНО</span>
+                            {% else %}
+                                ВЫКЛЮЧЕНО
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <form method="post"
+                          action="{% url 'admin_toggle_election' election.id %}">
+                        {% csrf_token %}
+
+                        <button class="px-5 py-2 rounded-xl
+                            {% if election.is_active %}
+                                bg-red-400
+                            {% else %}
+                                bg-green-400
+                            {% endif %}
+                            text-slate-950 font-bold">
+                            {% if election.is_active %}
+                                Выключить
+                            {% else %}
+                                Сделать активным
+                            {% endif %}
+                        </button>
+                    </form>
+
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-4 mt-6">
+
+                    <div class="rounded-2xl bg-blue-500/20 p-5">
+                        <div class="font-bold">
+                            🔵 {{ election.blue_name }}
+                        </div>
+
+                        <div class="text-3xl font-black mt-2 blue-count">
+                            {{ election.blue_votes }}
+                        </div>
+
+                        <div class="text-white/50 blue-percent">
+                            0%
+                        </div>
+                    </div>
+
+                    <div class="rounded-2xl bg-red-500/20 p-5">
+                        <div class="font-bold">
+                            🔴 {{ election.red_name }}
+                        </div>
+
+                        <div class="text-3xl font-black mt-2 red-count">
+                            {{ election.red_votes }}
+                        </div>
+
+                        <div class="text-white/50 red-percent">
+                            0%
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="text-center text-white/40 mt-4 total-count">
+                    Всего: {{ election.total_votes }}
+                </div>
+
+            </div>
+            {% empty %}
+                <div class="glass rounded-2xl p-8 text-white/50">
+                    Голосований пока нет.
+                </div>
+            {% endfor %}
+
+        </div>
+    </section>
+
+    <!-- CREATE QUESTION -->
+    <section class="glass rounded-3xl p-6 md:p-8 mb-12">
+
+        <h2 class="text-2xl font-bold">
+            Добавить вопрос
+        </h2>
+
+        <form method="post"
+              action="{% url 'admin_create_question' %}"
+              class="mt-6 space-y-5">
+
+            {% csrf_token %}
+
+            {{ question_form.text }}
+
+            <div>
+                <label class="block text-sm text-white/60 mb-2">
+                    Тип вопроса
+                </label>
+
+                {{ question_form.question_type }}
+            </div>
+
+            <div id="optionsBlock">
+                <label class="block text-sm text-white/60 mb-2">
+                    Варианты ответа
+                </label>
+
+                {{ question_form.options_text }}
+
+                <p class="text-white/40 text-sm mt-2">
+                    Каждый вариант — с новой строки.
+                </p>
+            </div>
+
+            <label class="flex items-center gap-3">
+                {{ question_form.is_active }}
+                <span>Показывать вопрос на сайте</span>
+            </label>
+
+            <button class="bg-white text-slate-950 rounded-xl px-7 py-4 font-bold hover:scale-105 transition">
+                ДОБАВИТЬ ВОПРОС
+            </button>
+
+        </form>
+
+    </section>
+
+    <!-- QUESTIONS -->
+    <section>
+
+        <h2 class="text-3xl font-bold mb-5">
+            Вопросы и результаты
+        </h2>
+
+        <div class="space-y-5">
+
+            {% for question in questions %}
+            <div class="glass rounded-2xl p-6">
+
+                <div class="flex flex-col md:flex-row justify-between gap-4">
+
+                    <div>
+                        <div class="text-xl font-bold">
+                            {{ question.text }}
+                        </div>
+
+                        <div class="text-xs text-cyan-300 mt-2">
+                            {{ question.get_question_type_display }}
+                            · Ответов: {{ question.responses.count }}
+                        </div>
+                    </div>
+
+                    <form method="post"
+                          action="{% url 'admin_delete_question' question.id %}">
+                        {% csrf_token %}
+
+                        <button class="px-4 py-2 rounded-xl bg-red-500/20 text-red-300 hover:bg-red-500/30">
+                            Удалить
+                        </button>
+                    </form>
+
+                </div>
+
+                {% if question.question_type == "choice" %}
+                    <div class="grid md:grid-cols-2 gap-3 mt-5">
+
+                        {% for option in question.options.all %}
+                            <div class="rounded-xl bg-white/5 p-4 flex justify-between">
+                                <span>{{ option.text }}</span>
+                                <strong>
+                                    {{ option.responses.count }}
+                                </strong>
+                            </div>
+                        {% empty %}
+                            <div class="text-white/40">
+                                Варианты не добавлены.
+                            </div>
+                        {% endfor %}
+
+                    </div>
+                {% else %}
+                    <div class="mt-5 space-y-2 max-h-72 overflow-y-auto">
+
+                        {% for response in question.responses.all %}
+                            {% if response.text_answer %}
+                                <div class="rounded-xl bg-white/5 p-4">
+                                    {{ response.text_answer }}
+                                </div>
+                            {% endif %}
+                        {% empty %}
+                            <div class="text-white/40">
+                                Ответов пока нет.
+                            </div>
+                        {% endfor %}
+
+                    </div>
+                {% endif %}
+
+            </div>
+            {% empty %}
+                <div class="glass rounded-2xl p-8 text-white/50">
+                    Вопросов пока нет.
+                </div>
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+</div>
+</main>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function updateQuestionType() {
+    const select = document.querySelector(
+        '[name="question_type"]'
+    );
+
+    const options = document.getElementById(
+        "optionsBlock"
+    );
+
+    if (select.value === "choice") {
+        options.style.display = "block";
+    } else {
+        options.style.display = "none";
+    }
+}
+
+const questionType = document.querySelector(
+    '[name="question_type"]'
+);
+
+if (questionType) {
+    questionType.addEventListener(
+        "change",
+        updateQuestionType
+    );
+
+    updateQuestionType();
+}
+
+async function updateAdminResults() {
+    const response = await fetch(
+        "{% url 'election_results' %}"
+    );
+
+    const data = await response.json();
+
+    if (!data.active) {
+        return;
+    }
+
+    const activeCard = document.querySelector(
+        ".election-card"
+    );
+
+    if (!activeCard) {
+        return;
+    }
+
+    activeCard.querySelector(
+        ".blue-count"
+    ).textContent = data.blue;
+
+    activeCard.querySelector(
+        ".red-count"
+    ).textContent = data.red;
+
+    activeCard.querySelector(
+        ".blue-percent"
+    ).textContent = data.blue_percent + "%";
+
+    activeCard.querySelector(
+        ".red-percent"
+    ).textContent = data.red_percent + "%";
+
+    activeCard.querySelector(
+        ".total-count"
+    ).textContent = "Всего: " + data.total;
+}
+
+setInterval(updateAdminResults, 2000);
+</script>
+{% endblock %}

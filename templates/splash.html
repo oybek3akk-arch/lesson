@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Добро пожаловать</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Raleway:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root { --accent: {{ style.accent }}; --bg-one: {{ style.bg1 }}; --bg-two: {{ style.bg2 }}; }
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 50% 30%, var(--accent) 0%, var(--bg-two) 36%, var(--bg-one) 100%);
+            color: white;
+            font-family: '{{ font }}', sans-serif;
+        }
+
+        .glow-bg {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            border-radius: 50%;
+            background: #35d7e8;
+            filter: blur(150px);
+            opacity: .12;
+            left: 50%;
+            top: 35%;
+            transform: translate(-50%, -50%);
+        }
+
+        .mountain {
+            position: absolute;
+            bottom: -2px;
+            width: 0;
+            height: 0;
+            border-left: 230px solid transparent;
+            border-right: 230px solid transparent;
+            border-bottom: 360px solid #086579;
+        }
+
+        .m1 { left: -100px; }
+        .m2 {
+            left: 18%;
+            border-left-width: 310px;
+            border-right-width: 310px;
+            border-bottom-width: 440px;
+            border-bottom-color: #0a8095;
+        }
+        .m3 {
+            right: 18%;
+            border-left-width: 290px;
+            border-right-width: 290px;
+            border-bottom-width: 430px;
+            border-bottom-color: #07556a;
+        }
+        .m4 { right: -100px; border-bottom-color: #063b50; }
+
+        .line {
+            opacity: 0;
+            transform: translateY(25px);
+            animation: showLine 1.1s ease forwards;
+        }
+
+        .l1 { animation-delay: .4s; }
+        .l2 { animation-delay: 1.8s; }
+        .l3 { animation-delay: 3.2s; }
+        .l4 { animation-delay: 4.7s; }
+        .l5 { animation-delay: 6.1s; }
+
+        @keyframes showLine {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .loader {
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: 5px;
+            background: rgba(255,255,255,.13);
+        }
+
+        .loader-bar {
+            width: 0;
+            height: 100%;
+            background: white;
+            animation: loading 10s linear forwards;
+        }
+
+        @keyframes loading {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        .fade-out { animation: fadeOut .8s ease forwards; }
+
+        @keyframes fadeOut {
+            to { opacity: 0; }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="glow-bg"></div>
+
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="mountain m1"></div>
+        <div class="mountain m2"></div>
+        <div class="mountain m3"></div>
+        <div class="mountain m4"></div>
+    </div>
+
+    <main class="min-h-screen flex items-center justify-center text-center px-5 relative z-10">
+        <div class="max-w-6xl">
+
+            <div class="line l1 text-3xl md:text-5xl font-medium">
+                Здравствуйте
+            </div>
+
+            <div class="line l2 text-4xl md:text-6xl font-bold mt-5">
+                Добро пожаловать
+            </div>
+
+            <div class="line l3 text-2xl md:text-4xl text-white/80 mt-4">на моём уроке</div>
+            <div class="line l3 text-xl md:text-3xl text-white/70 mt-5">Ваш учитель: <strong>Shohjahon</strong></div>
+
+            <div class="line l4 text-xl md:text-3xl text-white/70 mt-10">
+                Тема нашего урока:
+            </div>
+
+            <div class="line l5 mt-5 text-3xl md:text-6xl font-bold tracking-wide">
+                <span class="bg-gradient-to-r from-white via-cyan-200 to-white bg-clip-text text-transparent">
+                    ПРОГРЕСС НАЧИНАЕТСЯ<br>
+                    С САМОПОЗНАНИЯ
+                </span>
+            </div>
+
+        </div>
+    </main>
+
+    <div class="loader">
+        <div class="loader-bar"></div>
+    </div>
+
+    <script>
+        setTimeout(() => {
+            document.body.classList.add("fade-out");
+
+            setTimeout(() => {
+                window.location.href = "{% url 'home' %}";
+            }, 800);
+        }, 10000);
+    </script>
+</body>
+</html>

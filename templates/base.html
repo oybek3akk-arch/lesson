@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}Прогресс начинается с самопознания{% endblock %}</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Raleway:wght@400;500;600;700&family=Roboto:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root { --accent: {{ style.accent }}; --accent-soft: {{ style.soft }}; --bg-one: {{ style.bg1 }}; --bg-two: {{ style.bg2 }}; }
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 15% 10%, var(--accent-soft), transparent 30%),
+                radial-gradient(circle at 90% 60%, var(--accent-soft), transparent 30%),
+                linear-gradient(135deg, var(--bg-one), var(--bg-two) 48%, #020a12);
+            color: white;
+            font-family: '{{ font }}', sans-serif;
+        }
+
+        .glass {
+            background: rgba(255,255,255,.065);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255,255,255,.12);
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #fff, #75e7ef, #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .mountain {
+            position: absolute;
+            bottom: -2px;
+            width: 0;
+            height: 0;
+            border-left: 220px solid transparent;
+            border-right: 220px solid transparent;
+            border-bottom: 330px solid rgba(8,102,123,.60);
+        }
+
+        .m1 { left: -100px; }
+        .m2 {
+            left: 18%;
+            border-left-width: 300px;
+            border-right-width: 300px;
+            border-bottom-width: 430px;
+            border-bottom-color: rgba(10,130,150,.62);
+        }
+        .m3 {
+            right: 15%;
+            border-left-width: 290px;
+            border-right-width: 290px;
+            border-bottom-width: 410px;
+            border-bottom-color: rgba(5,75,95,.75);
+        }
+        .m4 { right: -120px; border-bottom-color: rgba(3,49,67,.9); }
+
+        .glow {
+            box-shadow: 0 0 35px rgba(34,211,238,.13);
+        }
+
+        ::-webkit-scrollbar { width: 9px; }
+        ::-webkit-scrollbar-track { background: #031522; }
+        ::-webkit-scrollbar-thumb {
+            background: #16849a;
+            border-radius: 10px;
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <header class="fixed top-0 left-0 right-0 z-50 px-3 md:px-7 py-3">
+        <div class="max-w-7xl mx-auto glass rounded-2xl px-5 md:px-7 py-3.5 flex items-center justify-between shadow-2xl">
+
+            <a href="{% url 'home' %}" class="flex items-center gap-3 font-semibold text-lg">
+                <span class="w-10 h-10 rounded-xl bg-white/10 border border-white/20 flex items-center justify-center font-bold">Sh</span>
+                <span>Я супермодом Ваш Саппорт учитель : Shohjahon</span>
+            </a>
+
+            <nav class="hidden md:flex items-center gap-8 text-sm text-white/70">
+                <a href="{% url 'home' %}" class="hover:text-white transition">Главная</a>
+                <a href="{% url 'vote' %}" class="hover:text-white transition">Голосование</a>
+                <a href="{% url 'home' %}#questions" class="hover:text-white transition">Вопросы</a>
+            </nav>
+
+            <a href="{% url 'vote' %}" class="bg-cyan-400 hover:bg-cyan-300 text-slate-950 px-5 py-2.5 rounded-xl font-bold transition">
+                Голосовать
+            </a>
+        </div>
+    </header>
+
+    {% if messages %}
+        <div class="fixed top-24 right-5 z-[60] space-y-2 max-w-sm">
+            {% for message in messages %}
+                <div class="glass rounded-xl px-5 py-4 shadow-xl text-sm">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+
+    <footer class="border-t border-white/10 mt-20 py-10 px-5">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-4 text-white/45 text-sm">
+            <div>Продюсер: Шохжахон</div>
+            <div>Сценарист: Shohjahon • При поддержке: shohjahon intertaimnt</div>
+        </div>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>
