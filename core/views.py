@@ -313,3 +313,9 @@ def admin_delete_question(request, question_id):
     question.delete()
     messages.success(request, "Вопрос удален.")
     return redirect("admin_panel")
+
+
+def admin_logout(request):
+    logout(request)
+    messages.success(request, "Вы успешно вышли из панели администратора.")
+    return redirect("admin_login")
