@@ -13,28 +13,38 @@
     }
 
     .blue-team {
-        background: linear-gradient(145deg, #2196f3, #0876d1);
-        color: #050505;
+        background: linear-gradient(145deg, #1e40af, #3b82f6);
+        color: #ffffff; /* Белый текст внутри синей карточки */
     }
 
     .red-team {
-        background: linear-gradient(145deg, #ef4444, #c52222);
-        color: #050505;
+        background: linear-gradient(145deg, #b91c1c, #ef4444);
+        color: #ffffff; /* Белый текст внутри красной карточки */
+    }
+
+    .glass-panel {
+        background: rgba(255, 255, 255, 0.06);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
     }
 </style>
 {% endblock %}
 
 {% block content %}
-<main class="min-h-screen pt-36 pb-20 px-5">
+<!-- Сине-голубой фон страницы -->
+<main class="min-h-screen bg-gradient-to-br from-[#061c37] via-[#0b3260] to-[#125394] pt-36 pb-20 px-5">
 
     <div class="max-w-5xl mx-auto">
 
         <div class="text-center mb-14">
-            <span class="text-cyan-300 text-sm uppercase tracking-[.3em]">
+            <!-- Шрифт оттенка между синим и голубым (Cyan) -->
+            <span class="text-cyan-400 text-sm font-bold uppercase tracking-[.3em]">
                 ГОЛОСОВАНИЕ
             </span>
 
-            <h1 class="text-4xl md:text-6xl font-bold mt-4 gradient-text">
+            <!-- Основной заголовок — Чисто белый -->
+            <h1 class="text-4xl md:text-6xl font-black mt-4 tracking-tight text-white drop-shadow-md">
                 {% if election %}
                     {{ election.title }}
                 {% else %}
@@ -42,7 +52,8 @@
                 {% endif %}
             </h1>
 
-            <p class="text-white/55 mt-5">
+            <!-- Текст-описание — Светлый лазурно-голубой оттенок -->
+            <p class="text-sky-200/80 mt-5 font-medium">
                 Выберите одну из двух команд.
             </p>
         </div>
@@ -51,61 +62,67 @@
         <div class="grid md:grid-cols-2 gap-7">
 
             <button onclick="voteFor('blue')"
-                    class="team-card blue-team rounded-3xl p-8 md:p-12 text-left shadow-2xl">
-                <div class="text-7xl mb-7">🔵</div>
+                    class="team-card blue-team rounded-3xl p-8 md:p-12 text-left shadow-2xl border border-blue-400/20">
+                <div class="text-7xl mb-7 drop-shadow-md">🔵</div>
 
-                <div class="text-3xl font-black">
+                <div class="text-3xl font-black tracking-tight text-white">
                     {{ election.blue_name }}
                 </div>
 
-                <div class="mt-4 font-semibold opacity-70">
+                <div class="mt-4 font-medium text-blue-100/90">
                     Нажать, чтобы проголосовать
                 </div>
 
-                <div id="bluePercent" class="text-5xl font-black mt-10">
+                <!-- Проценты голосов — Белые -->
+                <div id="bluePercent" class="text-5xl font-black mt-10 tracking-tight text-white">
                     0%
                 </div>
 
-                <div class="mt-2 font-semibold">
+                <div class="mt-2 font-semibold text-blue-100/90">
                     голосов
                 </div>
             </button>
 
             <button onclick="voteFor('red')"
-                    class="team-card red-team rounded-3xl p-8 md:p-12 text-left shadow-2xl">
-                <div class="text-7xl mb-7">🔴</div>
+                    class="team-card red-team rounded-3xl p-8 md:p-12 text-left shadow-2xl border border-red-400/20">
+                <div class="text-7xl mb-7 drop-shadow-md">🔴</div>
 
-                <div class="text-3xl font-black">
+                <div class="text-3xl font-black tracking-tight text-white">
                     {{ election.red_name }}
                 </div>
 
-                <div class="mt-4 font-semibold opacity-70">
+                <div class="mt-4 font-medium text-red-100/90">
                     Нажать, чтобы проголосовать
                 </div>
 
-                <div id="redPercent" class="text-5xl font-black mt-10">
+                <!-- Проценты голосов — Белые -->
+                <div id="redPercent" class="text-5xl font-black mt-10 tracking-tight text-white">
                     0%
                 </div>
 
-                <div class="mt-2 font-semibold">
+                <div class="mt-2 font-semibold text-red-100/90">
                     голосов
                 </div>
             </button>
 
         </div>
 
-        <div class="glass rounded-3xl p-7 mt-8 text-center">
-            <div class="text-white/50 text-sm">Всего голосов</div>
-            <div id="totalVotes" class="text-4xl font-bold mt-2">0</div>
+        <div class="glass-panel rounded-3xl p-7 mt-8 text-center shadow-xl">
+            <!-- Подпись — Сине-голубой шрифт -->
+            <div class="text-sky-300/70 text-sm font-semibold tracking-wider uppercase">Всего голосов</div>
+            <!-- Общее количество — Яркий бело-голубой цвет -->
+            <div id="totalVotes" class="text-4xl font-black mt-2 text-white">0</div>
         </div>
 
+        <!-- Сообщение об успешном голосовании — Голубой шрифт -->
         <div id="voteMessage"
-             class="hidden text-center mt-7 glass rounded-2xl p-5 text-cyan-200">
+             class="hidden text-center mt-7 glass-panel rounded-2xl p-5 text-cyan-200 font-medium shadow-lg">
         </div>
 
         {% else %}
-        <div class="glass rounded-3xl p-10 text-center text-white/50">
-            Сейчас активного голосования нет.
+        <!-- Сообщение об отсутствии голосования — Голубоватый полупрозрачный шрифт -->
+        <div class="glass-panel rounded-3xl p-10 text-center text-sky-200/50 shadow-xl">
+            Сейчас active-голосования нет.
         </div>
         {% endif %}
 
