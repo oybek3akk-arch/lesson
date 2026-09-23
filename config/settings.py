@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get("SECRET_KEY", "change-this-secret-key-in-production")
 
-DEBUG = "True"
+DEBUG = True
 
 # ALLOWED_HOSTS: список хостов через запятую, например:
 # ALLOWED_HOSTS=myapp.up.railway.app,mydomain.com
