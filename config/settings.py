@@ -11,13 +11,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get("SECRET_KEY", "change-this-secret-key-in-production")
 
-DEBUG = os.environ.get("DEBUG", "False") == "True"
+DEBUG = "True"
 
 # ALLOWED_HOSTS: список хостов через запятую, например:
 # ALLOWED_HOSTS=myapp.up.railway.app,mydomain.com
 ALLOWED_HOSTS = [
-    h.strip() for h in os.environ.get("ALLOWED_HOSTS", "*").split(",") if h.strip()
+    "web-production-2c0fa5.up.railway.app",
+    "localhost",
+    "127.0.0.1"
 ]
+
 
 # Railway отдаёт публичный домен приложения в этой переменной — используем
 # его, чтобы CSRF и ALLOWED_HOSTS работали "из коробки" без ручной настройки.
