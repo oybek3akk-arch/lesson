@@ -30,7 +30,7 @@ FONTS = [
     "DM Sans",
 ]
 VISUAL_STYLES = [
-    "default",
+    
 ]
 
 def site_visual(request):
