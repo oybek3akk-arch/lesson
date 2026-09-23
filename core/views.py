@@ -31,10 +31,6 @@ FONTS = [
 ]
 VISUAL_STYLES = [
     "default",
-    "minimal",
-    "brutalist",
-    "neo-brutalist",
-    "glassmorphism"
 ]
 
 def site_visual(request):
