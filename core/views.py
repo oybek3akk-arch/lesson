@@ -18,7 +18,6 @@ from .models import (
     UserStyle,
 )
 
-
 FONTS = [
     "Inter",
     "Poppins",
@@ -29,22 +28,15 @@ FONTS = [
     "Space Grotesk",
     "DM Sans",
 ]
-VISUAL_STYLES = [
-    
-]
+
 
 def site_visual(request):
     if not request.session.get("site_font"):
         request.session["site_font"] = random.choice(FONTS)
-    if not request.session.get("site_style"):
-        request.session["site_style"] = random.choice(VISUAL_STYLES)
-    return request.session["site_font"], request.session["site_style"]
+    return request.session["site_font"]
 
 def site_font(request):
-    return site_visual(request)[0]
-
-def site_style(request):
-    return site_visual(request)[1]
+    return site_visual(request)
 
 
 def ensure_session_key(request):
@@ -57,7 +49,7 @@ def splash(request):
     return render(
         request,
         "splash.html",
-        {"font": site_font(request), "style": site_style(request)},
+        {"font": site_font(request)},
     )
 
 
@@ -73,7 +65,6 @@ def home(request):
         "home.html",
         {
             "font": site_font(request),
-            "style": site_style(request),
             "questions": questions,
         },
     )
@@ -87,7 +78,6 @@ def vote(request):
         "vote.html",
         {
             "font": site_font(request),
-            "style": site_style(request),
             "election": election,
         },
     )
@@ -232,7 +222,7 @@ def admin_login_view(request):
     return render(
         request,
         "admin_login.html",
-        {"font": site_font(request), "style": site_style(request)},
+        {"font": site_font(request)},
     )
 
 
@@ -253,7 +243,6 @@ def admin_panel(request):
         "admin.html",
         {
             "font": site_font(request),
-            "style": site_style(request),
             "active_election": election,
             "elections": elections,
             "questions": questions,
@@ -322,10 +311,5 @@ def admin_create_question(request):
 def admin_delete_question(request, question_id):
     question = get_object_or_404(Question, id=question_id)
     question.delete()
-    messages.success(request, "Вопрос удалён.")
+    messages.success(request, "Вопрос удален.")
     return redirect("admin_panel")
-
-
-def admin_logout(request):
-    logout(request)
-    return redirect("home")
